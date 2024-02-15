@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Coding Exercise: Decoding a Message from a Text File</title>
+  </head>
+  <body>
+    <input type="file" id="inputfile">
+    <br>
+    <pre id="output"></pre>
+    <script>
+      document.getElementById('inputfile')
+        .addEventListener('change', function () {
+          var returnString = '';
+          let fr = new FileReader();
+          fr.onload = function () {
+            //  To read line by line an input file with the 'code word' format
+            let splitStatus=fr.result.split('\n');
+            var codeArray = [];
+            var lineArray = [];
+            for(let i=0; i<splitStatus.length; i++){
+              // each line contains a number followed by a word
+              if (splitStatus[i].length>1) {
+                lineArray.push(splitStatus[i]);
+                codeArray.push(splitStatus[i].split(' ')[0]);
+              }
+            }
+            // The numbers are placed into the pyramid in ascending order.
+            codeArray = codeArray.sort();
+            var index = 0, row = 1;
+            while(index < codeArray.length) {
+              for(let i=0; i<lineArray.length; i++) {
+                // The key to decoding the message is to use the words corresponding to the numbers at the end of each pyramid line
+                if (codeArray[index]==lineArray[i].split(' ')[0]) {
+                  returnString +=lineArray[i].split(' ')[1] + ' ';
+                  break;
+                }
+              }
+              row ++;
+              index=index+row;
+            }
+            document.getElementById('output').textContent = returnString;
+          }
+          fr.readAsText(this.files[0]);
+        }
+      );
+    </script>
+  </body>
+</html>
